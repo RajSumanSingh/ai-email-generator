@@ -1,3 +1,4 @@
+import Features from "../components/features/Features";
 import { useState } from "react";
 import Navbar from "../components/layout/Navbar";
 import Hero from "../components/layout/Hero";
@@ -10,17 +11,28 @@ export default function Home() {
   email: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
   return (
     <>
       <Navbar />
       <Hero />
-
-      <section className="bg-slate-100 py-16">
+      <Features />
+      <section id="generator" className="bg-slate-950 py-16">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 lg:grid-cols-2">
 
-          <EmailForm setGeneratedEmail={setGeneratedEmail} />
+          <EmailForm setGeneratedEmail={setGeneratedEmail}
+          loading={loading}
+          setLoading={setLoading}
+          setError={setError}
+          />
 
-          <EmailOutput generatedEmail={generatedEmail} />
+          <EmailOutput generatedEmail={generatedEmail}
+          loading={loading}
+          error={error}
+          />
 
         </div>
       </section>

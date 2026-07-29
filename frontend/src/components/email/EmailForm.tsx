@@ -1,5 +1,6 @@
+import { Loader2 } from "lucide-react";
 import { generateEmail } from "../../services/emailService";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import Button from "../ui/Button";
 import Input from "../ui/Input";
@@ -14,9 +15,13 @@ interface EmailFormProps {
       email: string;
     }>
   >;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+
+  setError: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function EmailForm({ setGeneratedEmail }: EmailFormProps) {
+export default function EmailForm({ setGeneratedEmail, loading, setLoading, setError, }: EmailFormProps) {
   const [formData, setFormData] = useState({
     purpose: "",
     recipientName: "",
@@ -25,6 +30,8 @@ export default function EmailForm({ setGeneratedEmail }: EmailFormProps) {
     length: "Short",
     keyPoints: "",
   });
+
+
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -37,27 +44,35 @@ export default function EmailForm({ setGeneratedEmail }: EmailFormProps) {
 
   async function handleSubmit(
   e: React.FormEvent
- ){
+) {
   e.preventDefault();
 
+  setLoading(true);
+
   try {
+    setError(""); // Clear any previous error
     const response = await generateEmail(formData);
 
     setGeneratedEmail(response);
-
   } catch (error) {
     console.error(error);
+    setError("Failed to generate email. Please try again.");
+  } finally {
+    setLoading(false);
   }
- }
+}
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl bg-white p-8 shadow-lg"
+      className="rounded-3xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-xl"
     >
-      <h2 className="mb-8 text-3xl font-bold">
+      <h2 className="mb-2 text-3xl font-bold text-white">
         Generate AI Email
       </h2>
+        <p className="mb-6 text-slate-400">
+          Fill in the details and let MailCraft AI write the perfect email.
+        </p>
 
       <div className="space-y-6">
 
@@ -117,9 +132,22 @@ export default function EmailForm({ setGeneratedEmail }: EmailFormProps) {
           placeholder="Explain what you want the AI to include..."
         />
 
-        <Button className="w-full" type="submit">
-          Generate Email
+
+        <Button
+        className="flex w-full items-center justify-center gap-2"
+        type="submit"
+        disabled={loading}
+        >
+            {loading ? (
+                <>
+                    <Loader2 size={20} className="animate-spin" />
+                    Generating...
+                </>
+            ) : (
+                "Generate Email"
+            )}
         </Button>
+                    
 
       </div>
     </form>
