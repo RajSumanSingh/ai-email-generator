@@ -27,7 +27,8 @@ app = FastAPI(
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[""],
+    allow_origins=[""http://localhost:5173","
+    "https://vercel.com/avi-s-projects-69c297b9/ai-email-generator"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
