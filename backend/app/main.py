@@ -11,6 +11,9 @@ load_dotenv()
 
 api_key = os.getenv("GROQ_API_KEY")
 
+print("API KEY FOUND:", bool(api_key))
+print("API KEY LENGTH:", len(api_key) if api_key else 0)
+
 if not api_key:
     raise ValueError("GROQ_API_KEY environment variable is not set.")
 
