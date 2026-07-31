@@ -9,8 +9,13 @@ from openai import OpenAI
 
 load_dotenv()
 
+api_key = os.getenv("GROQ_API_KEY")
+
+if not api_key:
+    raise ValueError("GROQ_API_KEY environment variable is not set.")
+
 client = OpenAI(
-    api_key=os.getenv("GROQ_API_KEY"),
+    api_key=api_key,
     base_url="https://api.groq.com/openai/v1"
 )
 
@@ -22,7 +27,7 @@ app = FastAPI(
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[""],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -103,7 +108,7 @@ Return only the email.
     email_response = response.choices[0].message.content
 
     return {
-        "subject": "AI Generated Email",
+        "success": True,
         "email":email_response
 
     }
