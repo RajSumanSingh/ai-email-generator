@@ -185,7 +185,7 @@ python -m venv .venv
 Windows
 
 ```bash
-.venv\Scripts\activate
+..\venv\Scripts\Activate
 ```
 
 Linux / macOS
@@ -203,7 +203,7 @@ pip install -r requirements.txt
 ### Run Backend
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 ---

@@ -32,6 +32,11 @@ export default function EmailForm({ setGeneratedEmail, loading, setLoading, setE
   });
 
 
+const isFormValid =
+  formData.purpose.trim() !== "" &&
+  formData.recipientName.trim() !== "" &&
+  formData.recipientEmail.trim() !== "";
+
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -134,15 +139,21 @@ export default function EmailForm({ setGeneratedEmail, loading, setLoading, setE
 
 
         <Button
-        className="flex w-full items-center justify-center gap-2"
-        type="submit"
-        disabled={loading}
-        >
+         className={`flex w-full items-center justify-center gap-2 transition-all duration-300 ${
+           !isFormValid
+             ? "cursor-not-allowed opacity-50"
+             : "hover:scale-[1.02]"
+      }`}
+      type="submit"
+      disabled={loading || !isFormValid}
+  >
             {loading ? (
                 <>
                     <Loader2 size={20} className="animate-spin" />
                     Generating...
                 </>
+            ) : !isFormValid ? (
+                "Fill Required Fields"
             ) : (
                 "Generate Email"
             )}
