@@ -67,6 +67,10 @@ class EmailRequest(BaseModel):
 
 @app.post("/generate-email")
 def generate_email(data: EmailRequest):
+
+    print("=" * 50)
+    print(data)
+    print("=" * 50)
     
 
     prompt = f"""
