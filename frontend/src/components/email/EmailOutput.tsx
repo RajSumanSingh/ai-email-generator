@@ -47,18 +47,21 @@ ${generatedEmail.email}`;
 function handleDownloadPDF() {
   const doc = new jsPDF();
 
+  const subject = String(generatedEmail.subject ?? "");
+  const email = String(generatedEmail.email ?? "");
+
+  
+
   doc.setFontSize(20);
   doc.text("MailCraft AI", 20, 20);
 
   doc.setFontSize(14);
   doc.text("Subject:", 20, 40);
-  doc.text(generatedEmail.subject, 20, 50);
+  doc.text(subject, 20, 50);
 
   doc.text("Email:", 20, 70);
 
-  const emailLines = doc.splitTextToSize(
-    generatedEmail.email,
-    170
+  const emailLines = doc.splitTextToSize(email, 170
   );
 
   doc.text(emailLines, 20, 80);
