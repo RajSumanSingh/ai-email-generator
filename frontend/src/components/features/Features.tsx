@@ -64,7 +64,7 @@ function Features() {
         {/* Steps */}
         <div className="mt-24 border-t border-white/10">
 
-          {steps.map((step, index) => (
+          {steps.map((step) => (
             <div
               key={step.number}
               className="group grid grid-cols-[60px_1fr] gap-6 border-b border-white/10 py-10 transition-colors duration-500 hover:bg-white/[0.015] md:grid-cols-[100px_0.8fr_1.2fr] md:gap-10 md:py-14"
