@@ -23,7 +23,7 @@ function Features() {
   return (
     <section
       id="how-it-works"
-      className="relative overflow-hidden bg-[#0b0b0b] py-32 text-[#f4f1ea] md:py-40"
+      className="relative overflow-hidden bg-[#0b0b0b] py-20 text-[#f4f1ea] md:py-24"
     >
       {/* Subtle atmosphere */}
       <div className="pointer-events-none absolute inset-0">
@@ -62,7 +62,7 @@ function Features() {
         </div>
 
         {/* Steps */}
-        <div className="mt-24 border-t border-white/10">
+        <div className="mt-16 border-t border-white/10">
 
           {steps.map((step) => (
             <div
@@ -95,7 +95,7 @@ function Features() {
         </div>
 
         {/* Closing statement */}
-        <div className="mt-28 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-end">
+        <div className="mt-20 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-end">
 
           <div>
             <p className="text-[9px] uppercase tracking-[0.28em] text-white/20">
@@ -123,7 +123,7 @@ function Features() {
         </div>
 
         {/* Bottom marker */}
-        <div className="mt-24 flex items-center justify-between border-t border-white/10 pt-5">
+        <div className="mt-16 flex items-center justify-between border-t border-white/10 pt-5">
           <span className="text-[9px] uppercase tracking-[0.25em] text-white/20">
             MailCraft AI
           </span>
