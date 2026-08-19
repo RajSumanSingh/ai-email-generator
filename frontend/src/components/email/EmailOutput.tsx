@@ -1,5 +1,4 @@
-import { Check, Copy, Download, Sparkles } from "lucide-react";
-import Button from "../ui/Button";
+import { ArrowUpRight, Check, Copy, Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import jsPDF from "jspdf";
 
@@ -16,184 +15,271 @@ export default function EmailOutput({
   generatedEmail,
   loading,
   error,
-
 }: EmailOutputProps) {
   const hasEmail =
-    generatedEmail.subject || generatedEmail.email;
+    generatedEmail.subject.trim() !== "" ||
+    generatedEmail.email.trim() !== "";
 
   const [copied, setCopied] = useState(false);
 
- async function handleCopy() {
-  const text = `Subject: ${generatedEmail.subject}
+  async function handleCopy() {
+    const text = `Subject: ${generatedEmail.subject}
 
 
 ${generatedEmail.email}`;
 
+    try {
+      await navigator.clipboard.writeText(text);
 
+      setCopied(true);
 
-  try {
-    await navigator.clipboard.writeText(text);
-
-    setCopied(true);
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  } catch (error) {
-    console.error("Failed to copy:", error);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
   }
-}
 
-function handleDownloadPDF() {
-  const doc = new jsPDF();
+  function handleDownloadPDF() {
+    const doc = new jsPDF();
 
-  const subject = String(generatedEmail.subject ?? "");
-  const email = String(generatedEmail.email ?? "");
+    const subject = String(generatedEmail.subject ?? "");
+    const email = String(generatedEmail.email ?? "");
 
-  
+    doc.setFontSize(20);
+    doc.text("MailCraft AI", 20, 20);
 
-  doc.setFontSize(20);
-  doc.text("MailCraft AI", 20, 20);
+    doc.setFontSize(14);
+    doc.text("Subject:", 20, 40);
+    doc.text(subject, 20, 50);
 
-  doc.setFontSize(14);
-  doc.text("Subject:", 20, 40);
-  doc.text(subject, 20, 50);
+    doc.text("Email:", 20, 70);
 
-  doc.text("Email:", 20, 70);
+    const emailLines = doc.splitTextToSize(email, 170);
 
-  const emailLines = doc.splitTextToSize(email, 170
-  );
+    doc.text(emailLines, 20, 80);
 
-  doc.text(emailLines, 20, 80);
-
-  doc.save("MailCraft_Email.pdf");
-}
+    doc.save("MailCraft_Email.pdf");
+  }
 
   return (
-    <div className="h-full rounded-3xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl backdrop-blur-xl">
+    <div className="relative h-full">
 
-      {/* Heading */}
-      <h2 className="mb-2 text-3xl font-bold text-white">
-        Generated Email
-      </h2>
+      {/* Header */}
+      <div className="mb-10 border-b border-white/10 pb-6">
+        <div className="flex items-start justify-between gap-6">
 
-      <p className="mb-8 text-slate-400">
-        Your AI-crafted email will appear below.
-      </p>
+          <div>
+            <p className="mb-3 text-[9px] uppercase tracking-[0.25em] text-white/30">
+              Result
+            </p>
 
-      {/* Email Container */}
-      <div className="min-h-[500px] rounded-2xl border border-slate-700 bg-slate-800/60 p-6">
+            <h2 className="text-3xl font-medium tracking-[-0.035em] text-[#f4f1ea] sm:text-4xl">
+              Your email.
+            </h2>
+
+            <p className="mt-4 max-w-md text-sm leading-6 text-white/40">
+              Review the message below, then copy it or save it as a PDF.
+            </p>
+          </div>
+
+          <span className="hidden text-[9px] uppercase tracking-[0.2em] text-white/20 sm:block">
+            02
+          </span>
+
+        </div>
+      </div>
+
+      {/* Error */}
       {error && (
-  <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
-    <h3 className="font-semibold text-red-400">
-      Unable to generate email
-    </h3>
+        <div className="mb-6 border-l border-[#c46a3a] bg-[#c46a3a]/5 px-5 py-4">
+          <p className="text-[9px] uppercase tracking-[0.2em] text-[#c46a3a]">
+            Generation error
+          </p>
 
-    <p className="mt-2 text-sm text-red-300">
-      {error}
-    </p>
-  </div>
-)}
+          <p className="mt-2 text-sm leading-6 text-white/60">
+            {error}
+          </p>
+        </div>
+      )}
+
+      {/* Email document */}
+      <div className="relative min-h-[520px]">
 
         {loading ? (
-          /* Loading Skeleton */
-          <div className="animate-pulse space-y-6">
-            <div className="h-6 w-40 rounded bg-slate-700"></div>
+          /* Loading state */
+          <div className="flex min-h-[520px] flex-col items-center justify-center border border-white/10 bg-[#11110f] px-8 text-center">
 
-            <div className="space-y-3">
-              <div className="h-4 rounded bg-slate-700"></div>
-              <div className="h-4 w-11/12 rounded bg-slate-700"></div>
-              <div className="h-4 w-4/5 rounded bg-slate-700"></div>
-              <div className="h-4 w-10/12 rounded bg-slate-700"></div>
-              <div className="h-4 w-2/3 rounded bg-slate-700"></div>
-            </div>
+            <Loader2
+              size={24}
+              className="mb-6 animate-spin text-[#c46a3a]"
+            />
+
+            <p className="text-[9px] uppercase tracking-[0.25em] text-white/30">
+              Writing your email
+            </p>
+
+            <p className="mt-3 text-sm text-white/40">
+              Turning your details into a message...
+            </p>
+
           </div>
         ) : hasEmail ? (
-          <>
-            {/* Subject */}
-            <div>
-              <h3 className="mb-3 text-lg font-semibold text-white">
-                Subject
-              </h3>
+          /* Generated email */
+          <div className="relative min-h-[520px] overflow-hidden bg-[#eee9df] px-7 py-8 text-[#171717] shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:px-10 sm:py-10">
 
-              <p className="whitespace-pre-line text-slate-300">
+            {/* Paper header */}
+            <div className="flex items-start justify-between border-b border-black/10 pb-6">
+
+              <div>
+                <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-black/35">
+                  MailCraft AI
+                </p>
+
+                <p className="mt-2 text-sm font-medium">
+                  New message
+                </p>
+              </div>
+
+              <div className="h-7 w-7 rounded-full border border-black/10" />
+            </div>
+
+            {/* Subject */}
+            <div className="mt-8 border-b border-black/10 pb-6">
+
+              <p className="mb-2 text-[8px] font-medium uppercase tracking-[0.2em] text-black/35">
+                Subject
+              </p>
+
+              <p className="text-base font-medium leading-6 text-black/80">
                 {generatedEmail.subject}
               </p>
+
             </div>
 
-            <hr className="my-6 border-slate-700" />
+            {/* Email body */}
+            <div className="mt-8">
 
-            {/* Email */}
-            <div>
-              <h3 className="mb-3 text-lg font-semibold text-white">
-                Email
-              </h3>
-
-              <p className="whitespace-pre-line leading-8 text-slate-300">
-                {generatedEmail.email}
+              <p className="mb-6 text-[8px] font-medium uppercase tracking-[0.2em] text-black/30">
+                Message
               </p>
+
+              <div className="max-h-[330px] overflow-y-auto pr-2">
+                <p className="whitespace-pre-line text-[13px] leading-7 text-black/70">
+                  {generatedEmail.email}
+                </p>
+              </div>
+
             </div>
-          </>
+
+            {/* Accent */}
+            <div className="absolute bottom-7 right-7 h-3 w-3 rounded-full bg-[#c46a3a]" />
+
+          </div>
         ) : (
-          /* Empty State */
-          <div className="flex h-full min-h-[450px] flex-col items-center justify-center text-center">
+          /* Empty state */
+          <div className="flex min-h-[520px] flex-col justify-between border-t border-white/10 bg-[#11110f] p-7 sm:p-10">
 
-            <div className="mb-6 rounded-full bg-indigo-500/20 p-5">
-              <Sparkles
-                size={40}
-                className="text-indigo-400"
-              />
+            <div className="flex justify-end">
+              <span className="text-[9px] tracking-[0.25em] text-white/15">
+                WAITING
+              </span>
             </div>
 
-            <h3 className="mb-3 text-2xl font-semibold text-white">
-              Ready to Generate
-            </h3>
+            <div className="max-w-md">
 
-            <p className="max-w-sm leading-7 text-slate-400">
-              Fill out the form on the left and click
-              <span className="font-medium text-slate-300">
-                {" "}
-                Generate Email
-              </span>{" "}
-              to let MailCraft AI create a professional email
-              for you.
-            </p>
+              <div className="mb-7 h-px w-12 bg-[#c46a3a]" />
+
+              <p className="text-4xl font-medium leading-[0.95] tracking-[-0.04em] text-white/25 sm:text-5xl">
+                Your words,
+                <br />
+                <span className="text-white/10">
+                  refined.
+                </span>
+              </p>
+
+              <p className="mt-6 max-w-sm text-sm leading-7 text-white/30">
+                Complete the details on the left and your finished email
+                will appear here.
+              </p>
+
+            </div>
+
+            <div className="flex items-center justify-between border-t border-white/10 pt-5">
+
+              <span className="text-[9px] uppercase tracking-[0.2em] text-white/20">
+                Thought → Email
+              </span>
+
+              <span className="text-[9px] uppercase tracking-[0.2em] text-white/20">
+                02 / 03
+              </span>
+
+            </div>
+
           </div>
         )}
 
       </div>
 
-      {/* Buttons */}
-      <div className="mt-6 flex gap-4">
+      {/* Actions */}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-5 border-t border-white/10 pt-5">
 
-        <Button type="button" className="flex items-center gap-2"
+        <p className="text-[9px] uppercase tracking-[0.2em] text-white/20">
+          {hasEmail ? "Ready to use" : "No message yet"}
+        </p>
+
+        <div className="flex items-center gap-3">
+
+          {/* Copy */}
+          <button
+            type="button"
             onClick={handleCopy}
-            
-        >
-          {copied ? (
-            <>
-              <Check size={18} />
-              Copied!
-            </>
-          ) : (
-            <>
-              <Copy size={18} />
-              Copy
-            </>
-          )}
-        </Button>
+            disabled={!hasEmail || loading}
+            className={`group flex items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium transition-all duration-300 ${
+              !hasEmail || loading
+                ? "cursor-not-allowed border border-white/10 text-white/20"
+                : "border border-white/15 text-white/60 hover:border-white/30 hover:text-white"
+            }`}
+          >
+            {copied ? (
+              <>
+                <Check size={14} />
+                Copied
+              </>
+            ) : (
+              <>
+                <Copy size={14} />
+                Copy
+              </>
+            )}
+          </button>
 
-        <Button
-          type="button"
-          variant="secondary"
-          className="flex items-center gap-2"
-          onClick={handleDownloadPDF}
-        >
-          <Download size={18} />
-          Download PDF
-        </Button>
+          {/* Download */}
+          <button
+            type="button"
+            onClick={handleDownloadPDF}
+            disabled={!hasEmail || loading}
+            className={`group flex items-center gap-2 rounded-full px-4 py-2.5 text-xs font-medium transition-all duration-300 ${
+              !hasEmail || loading
+                ? "cursor-not-allowed bg-white/10 text-white/20"
+                : "bg-[#f4f1ea] text-[#0b0b0b] hover:bg-white"
+            }`}
+          >
+            <Download size={14} />
 
+            Download PDF
+
+            <ArrowUpRight
+              size={13}
+              className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </button>
+
+        </div>
       </div>
+
     </div>
   );
 }

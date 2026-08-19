@@ -1,79 +1,141 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
-import Logo from "../../assets/logo-full.png";
-
-
+import { Menu, X, ArrowUpRight } from "lucide-react";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const scrollToSection = (id: string) => {
+    setIsOpen(false);
+
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-800/70 bg-slate-950/80 backdrop-blur-xl text-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <>
+      <nav className="absolute left-0 right-0 top-0 z-50 px-6 py-6 md:px-10 lg:px-14">
+        <div className="mx-auto flex max-w-[1500px] items-center justify-between">
 
-        {/* Logo */}
-        <a href="/" className="flex items-center">
-          <img
-            src={Logo}
-            alt="MailCraft AI"
-            className="h-12 w-auto object-contain transition-transform duration-300 hover:scale-105"
-          />
-        </a>
+          {/* Logo / Wordmark */}
+          <button
+            type="button"
+            onClick={() => scrollToSection("top")}
+            className="group text-left"
+          >
+            <span className="block text-[15px] font-semibold tracking-[0.18em] text-white transition-opacity duration-300 group-hover:opacity-70">
+              MAILCRAFT
+            </span>
 
-        {/* Desktop Navigation */}
-        <ul className="hidden md:flex items-center gap-8 text-slate-300">
-          <li className="cursor-pointer transition duration-300 hover:text-indigo-400">
-            Home
-          </li>
+            <span className="mt-0.5 block text-[8px] tracking-[0.28em] text-white/40">
+              AI EMAIL WRITER
+            </span>
+          </button>
 
-          <li className="cursor-pointer transition duration-300 hover:text-indigo-400">
-            Features
-          </li>
+          {/* Desktop Navigation */}
+          <div className="hidden items-center gap-8 md:flex">
 
-          <li className="cursor-pointer transition duration-300 hover:text-indigo-400">
-            About
-          </li>
-        </ul>
+            <button
+              type="button"
+              onClick={() => scrollToSection("generator")}
+              className="text-[13px] tracking-wide text-white/60 transition-colors duration-300 hover:text-white"
+            >
+              Workspace
+            </button>
 
-        {/* Mobile Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="rounded-lg p-2 transition hover:bg-slate-800 md:hidden"
-        >
-          {isOpen ? (
-            <X size={28} />
-          ) : (
-            <Menu size={28} />
-          )}
-        </button>
-      </div>
+            <button
+              type="button"
+              onClick={() => scrollToSection("how-it-works")}
+              className="text-[13px] tracking-wide text-white/60 transition-colors duration-300 hover:text-white"
+            >
+              About
+            </button>
+
+            <button
+              type="button"
+              onClick={() => scrollToSection("generator")}
+              className="group flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-4 py-2.5 text-[12px] font-medium tracking-wide text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/[0.08]"
+            >
+              Start Writing
+
+              <ArrowUpRight
+                size={14}
+                className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+              />
+            </button>
+
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-white backdrop-blur-md transition-all duration-300 hover:bg-white/[0.08] md:hidden"
+          >
+            {isOpen ? (
+              <X size={19} />
+            ) : (
+              <Menu size={19} />
+            )}
+          </button>
+
+        </div>
+      </nav>
 
       {/* Mobile Menu */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out md:hidden ${
-          isOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
-          
+        className={`fixed inset-0 z-40 flex flex-col justify-center bg-[#0b0b0b] px-8 transition-all duration-500 md:hidden ${
+          isOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
         }`}
       >
-        <div className="border-t border-slate-800 bg-slate-900/80 backdrop-blur-xl">
-          <ul className="flex flex-col px-6 py-4 text-slate-300">
 
-            <li className="rounded-lg px-4 py-3 transition hover:bg-slate-800 hover:text-indigo-400">
-              Home
-            </li>
+        <div className="space-y-2">
 
-            <li className="rounded-lg px-4 py-3 transition hover:bg-slate-800 hover:text-indigo-400">
-              Features
-            </li>
+          <button
+            type="button"
+            onClick={() => scrollToSection("top")}
+            className="block text-left text-5xl font-medium tracking-[-0.04em] text-white transition-opacity hover:opacity-60"
+          >
+            Home
+          </button>
 
-            <li className="rounded-lg px-4 py-3 transition hover:bg-slate-800 hover:text-indigo-400">
-              About
-            </li>
+          <button
+            type="button"
+            onClick={() => scrollToSection("generator")}
+            className="block text-left text-5xl font-medium tracking-[-0.04em] text-white transition-opacity hover:opacity-60"
+          >
+            Workspace
+          </button>
 
-          </ul>
+          <button
+            type="button"
+            onClick={() => scrollToSection("how-it-works")}
+            className="block text-left text-5xl font-medium tracking-[-0.04em] text-white transition-opacity hover:opacity-60"
+          >
+            About
+          </button>
+
         </div>
+
+        <button
+          type="button"
+          onClick={() => scrollToSection("generator")}
+          className="mt-12 flex w-fit items-center gap-2 rounded-full bg-[#f4f1ea] px-5 py-3 text-sm font-medium text-[#0b0b0b] transition-transform duration-300 hover:scale-[1.02]"
+        >
+          Start Writing
+
+          <ArrowUpRight size={16} />
+        </button>
+
+        <div className="absolute bottom-8 left-8 text-[9px] tracking-[0.25em] text-white/30">
+          MAILCRAFT AI
+        </div>
+
       </div>
-    </nav>
+    </>
   );
 }
 

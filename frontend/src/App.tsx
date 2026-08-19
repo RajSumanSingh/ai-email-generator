@@ -21,7 +21,13 @@ function App() {
     };
   }, []);
 
-  return loading ? <SplashScreen fadeOut={fadeOut} /> : <Home />;
+  return (
+    <>
+      <Home />
+
+      {loading && <SplashScreen fadeOut={fadeOut} />}
+    </>
+  );
 }
 
 export default App;

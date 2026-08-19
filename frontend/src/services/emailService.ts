@@ -7,19 +7,45 @@ const API = axios.create({
 interface EmailRequest {
   purpose: string;
   recipientName: string;
-  recipientEmail: string;
   tone: string;
   length: string;
   keyPoints: string;
 }
 
+interface EmailResponse {
+  success: boolean;
+  email: string;
+}
+
 export const generateEmail = async (
   formData: EmailRequest
 ) => {
-  const response = await API.post(
+  const response = await API.post<EmailResponse>(
     "/generate-email",
     formData
   );
 
-  return response.data;
+  const rawEmail = response.data.email || "";
+
+  // Extract subject from the generated response
+  const subjectMatch = rawEmail.match(
+    /^\s*\*{0,2}Subject:\*{0,2}\s*(.+?)(?:\r?\n|$)/i
+  );
+
+  const subject = subjectMatch
+    ? subjectMatch[1].trim()
+    : "";
+
+  // Remove the subject line from the email body
+  const email = rawEmail
+    .replace(
+      /^\s*\*{0,2}Subject:\*{0,2}\s*.+?(?:\r?\n){1,2}/i,
+      ""
+    )
+    .trim();
+
+  return {
+    subject,
+    email,
+  };
 };
