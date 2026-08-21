@@ -125,6 +125,15 @@ function Footer() {
 
         </div>
 
+        {/* Made with credit */}
+        <div className="mt-10 border-t border-white/5 pt-6 text-center">
+          <p className="text-[9px] uppercase tracking-[0.22em] text-white/20">
+            Made with{" "}
+            <span className="text-[#c46a3a]">♥</span>{" "}
+            by 0121
+          </p>
+        </div>
+
       </div>
     </footer>
   );
